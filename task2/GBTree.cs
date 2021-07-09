@@ -102,16 +102,59 @@ namespace task2
         {
             NodeInfo[] nodes = TreeHelper.GetTreeInLine(this);
             int level = 0;
-            for(int i = 0; i < nodes.Length; i++)
-            {                
+            int XCurcor = Console.WindowWidth / 2;
+            int YCursor = Console.CursorTop;
+            int paddingSize = 0;
+            int nodeTextLength = 0;            
+            for (int i = 0; i < nodes.Length; i++)
+            {
+                Console.SetCursorPosition(XCurcor, YCursor);
+                paddingSize = nodes[nodes.Length - 1].Depth - level;
+                nodeTextLength = nodes[i].Node.Value.ToString().Length + 2;
                 if (level != nodes[i].Depth)
                 {
+                    XCurcor = Console.CursorLeft - 3;
+                    YCursor = Console.CursorTop + 1;
                     Console.WriteLine();
-                    Console.Write("[{0}]", nodes[i].Node.Value);                    
+                    Console.SetCursorPosition(XCurcor, YCursor);
+                    Console.Write("[{0}]", nodes[i].Node.Value);
                 }
                 else
                 {
-                    Console.Write("[{0}]", nodes[i].Node.Value);
+                    Console.Write("[{0}]", nodes[i].Node.Value);                    
+                    XCurcor = Console.CursorLeft;
+                    YCursor = Console.CursorTop;
+                    if (nodes[i].Node.RightChild != null)
+                    {                        
+                        Console.Write(new string('_', paddingSize));
+                        Console.WriteLine();
+                        Console.SetCursorPosition(XCurcor + paddingSize, Console.CursorTop);
+                        Console.Write('\\');
+                        XCurcor = Console.CursorLeft -1 ;
+                        YCursor = Console.CursorTop + 1;
+                        Console.WriteLine();
+                        Console.SetCursorPosition(XCurcor, YCursor);
+                        Console.Write("[{0}]", nodes[i].Node.RightChild.Value);
+                        XCurcor = Console.CursorLeft - paddingSize - nodeTextLength;
+                        YCursor = Console.CursorTop - 2;
+                        Console.SetCursorPosition(XCurcor, YCursor);
+                    }
+                    if (nodes[i].Node.LeftChild != null)
+                    {
+                        Console.SetCursorPosition(XCurcor - (paddingSize + nodeTextLength), YCursor);
+                        Console.Write(new string('_', nodes[nodes.Length - 1].Depth - level));
+                        Console.WriteLine();
+                        Console.SetCursorPosition(XCurcor - (paddingSize + nodeTextLength + 1), Console.CursorTop);
+                        Console.Write('/');
+                        XCurcor = Console.CursorLeft-3;
+                        YCursor = Console.CursorTop+1;
+                        Console.WriteLine();
+                        Console.SetCursorPosition(XCurcor, YCursor);
+                        Console.Write("[{0}]", nodes[i].Node.LeftChild.Value);
+                        XCurcor = Console.CursorLeft + paddingSize + nodeTextLength;
+                        YCursor = Console.CursorTop - 2;
+                        Console.SetCursorPosition(XCurcor, YCursor);
+                    }
                 }
                 level = nodes[i].Depth;
             }
