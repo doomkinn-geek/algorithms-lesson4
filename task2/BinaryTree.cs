@@ -118,15 +118,7 @@ namespace task2
                     Print(p.Left, padding + 4);
                 }
             }
-        }
-
-        public void NewPrint(Node p, int pad, int left)
-        {
-            if(p != null)
-            {
-                return;
-            }
-        }
+        }        
 
         
 
