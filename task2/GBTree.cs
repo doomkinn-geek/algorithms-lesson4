@@ -10,6 +10,8 @@ namespace task2
         public TreeNode LeftChild { get; set; }
         public TreeNode RightChild { get; set; }
 
+        public TreeNode Parent { get; set; }
+
         public override bool Equals(object obj)
         {
             var node = obj as TreeNode;
@@ -38,6 +40,19 @@ namespace task2
             Value = value;
             LeftChild = lChild;
             RightChild = rChild;
+        }
+
+        public List<TreeNode> Children
+        {
+            get
+            {
+                List<TreeNode> res = new List<TreeNode>();
+                if (LeftChild != null)
+                    res.Add(LeftChild);
+                if (RightChild != null)
+                    res.Add(RightChild);
+                return res;
+            }
         }
     }
 
@@ -70,25 +85,57 @@ namespace task2
         }
         public void AddItem(int value)
         {
-            throw new NotImplementedException();
+            TreeNode tmp = root;
+            TreeNode par = tmp;
+
+            while (tmp != null)
+            {
+                par = tmp;
+                if (tmp.Value.CompareTo(value) == 0)
+                {
+                    Console.WriteLine($"Элемент {value} уже записан\n");
+                    return;
+                }
+                else if (tmp.Value.CompareTo(value) > 0)
+                    tmp = tmp.LeftChild;
+                else
+                    tmp = tmp.RightChild;
+            }
+
+            tmp = new TreeNode(value);
+
+            if (par == null)
+            {
+                tmp.Parent = tmp;
+                root = tmp;
+            }
+            else
+            {
+                tmp.Parent = par;
+                if (value.CompareTo(par.Value) < 0)
+                    par.LeftChild = tmp;
+                else
+                    par.RightChild = tmp;
+            }
         }
 
         public TreeNode GetNodeByValue(int value)
         {
-            TreeNode iterator = root;
+            if (root == null)
+                return null;
 
-            while (iterator != null)
+            Queue<TreeNode> queue = new Queue<TreeNode>();
+            queue.Enqueue(root);
+            while (queue.Count > 0)
             {
-                int compare = value - iterator.Value;
-                if (value == iterator.Value)
-                    return iterator;
+                TreeNode node = queue.Dequeue();                
+                if (value == node.Value)
+                    return node;
+                if (node.LeftChild != null)
+                    queue.Enqueue(node.LeftChild);
 
-                if (compare < 0)
-                {
-                    iterator = iterator.LeftChild;
-                    continue;
-                }
-                iterator = iterator.RightChild;
+                if (node.RightChild != null)
+                    queue.Enqueue(node.RightChild);
             }
             return null;
         }
@@ -160,9 +207,81 @@ namespace task2
             }
         }
 
+        public void PrintTree(TreeNode node, int indentSize, int currentLevel)
+        {
+            var currentNode = string.Format("{0}{1}", new string(' ', indentSize * currentLevel), node.Value);
+            Console.WriteLine(currentNode);
+            foreach (var child in node.Children)
+            {
+                PrintTree(child, indentSize, currentLevel + 1);
+            }
+        }
+
+        public void Print(TreeNode node, string result)
+        {
+            if (node.Children == null || node.Children.Count == 0)
+            {                
+                Console.WriteLine(result);
+                return;
+            }
+            foreach (var child in node.Children)
+            {
+                Print(child, result + " " + child.Value.ToString());
+            }
+        }
+
         public void RemoveItem(int value)
         {
-            throw new NotImplementedException();
+            TreeNode nodeToRemove = GetNodeByValue(value);
+            if (nodeToRemove == null)
+                return;
+
+            if (nodeToRemove.LeftChild == null && nodeToRemove.RightChild == null)
+            {                
+                if (nodeToRemove == root)
+                    root = null;
+                else
+                {
+                    TreeNode par = nodeToRemove.Parent;
+                    if (par.LeftChild == nodeToRemove)
+                        par.LeftChild = null;
+                    else
+                        par.RightChild = null;
+                }                
+            }
+            else if (nodeToRemove.LeftChild == null || nodeToRemove.RightChild == null)
+            {                
+                bool isroot = nodeToRemove == root;
+
+                var par = nodeToRemove.Parent;
+                var newchild = nodeToRemove.LeftChild ?? nodeToRemove.RightChild;
+                newchild.Parent = par;
+                if (par.LeftChild == nodeToRemove)
+                    par.LeftChild = newchild;
+                else
+                    par.RightChild = newchild;
+
+                if (isroot)
+                    root = newchild;               
+            }
+            else
+            {                
+                TreeNode repl = Max(nodeToRemove.LeftChild);
+                nodeToRemove.Value = repl.Value;
+                RemoveItem(repl.Value);                
+            }
+        }
+
+        private TreeNode Max(TreeNode node)
+        {
+            TreeNode tmp = node;
+            TreeNode ret = node;
+            while (tmp != null)
+            {
+                ret = tmp;
+                tmp = tmp.RightChild;
+            }
+            return ret;
         }
     }
 

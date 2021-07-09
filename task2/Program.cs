@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace task2
 {
@@ -6,16 +7,7 @@ namespace task2
     {
         static void Main(string[] args)
         {
-            BinaryTree tree = new BinaryTree(50);
-            tree.Root.Left = new Node(22);
-            tree.Root.Right = new Node(25);
-            tree.Root.Left.Left = new Node(28, new Node(64), new Node(34));
-            tree.Root.Left.Right = new Node(11);
-            tree.Root.Right.Left = new Node(5, new Node(67), new Node(46));
-            tree.Root.Right.Right = new Node(77);
-            tree.Root.Right.Left.Left = new Node(23, new Node(51), new Node(332));
-            tree.Root.Right.Left.Right = new Node(13, new Node(22), new Node(99));
-            tree.Root.Right.Left.Right.Right = new Node(243, new Node(223), new Node(11));
+            
 
             Tree gbtree = new Tree(50);
             gbtree.Root.LeftChild = new TreeNode(22);
@@ -29,13 +21,26 @@ namespace task2
             gbtree.Root.RightChild.LeftChild.RightChild.RightChild = new TreeNode(243, new TreeNode(223), new TreeNode(11));
 
 
-            Console.WriteLine("Бинарное дерево:");
-            Console.WriteLine(new string('=', 40));            
-            TreePrinter.Print(tree.Root);
-            Console.WriteLine(new string('=', 40));
+            Console.Write("Бинарное дерево ");
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine("(бился над печатью дерева, так и не смог сделать самостоятельно)");
+            Console.ForegroundColor = ConsoleColor.White;
+            Console.WriteLine(new string('=', 60));            
+            TreePrinter.Print(gbtree.Root);
+            Console.WriteLine(new string('=', 60));
+            TreePrinter.Print(gbtree.GetNodeByValue(25));
+            Console.WriteLine(new string('=', 60));
+            TreePrinter.Print(gbtree.GetNodeByValue(5));
+            Console.WriteLine(new string('=', 60));
 
-            gbtree.PrintTree();
-            
+            Tree gbtree2 = new Tree(45);
+            List<int> ls = new List<int> { 23, 51, 28, 1, 62, 67, 221, 91, 26,11,29,36,72 };
+            foreach (int i in ls)
+                gbtree2.AddItem(i);
+
+            TreePrinter.Print(gbtree2.Root);
+            gbtree2.RemoveItem(91);
+            TreePrinter.Print(gbtree2.Root);            
 
             Console.ReadLine();
         }

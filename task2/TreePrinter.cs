@@ -8,7 +8,7 @@ namespace task2
     {
         class NodeInfo
         {
-            public Node Node;
+            public TreeNode Node;
             public string Text;
             public int StartPos;
             public int Size { get { return Text.Length; } }
@@ -16,7 +16,7 @@ namespace task2
             public NodeInfo Parent, Left, Right;
         }
 
-        public static void Print(this Node root, int topMargin = 2, int leftMargin = 2)
+        public static void Print(this TreeNode root, int topMargin = 2, int leftMargin = 2)
         {
             if (root == null) return;
             int rootTop = Console.CursorTop + topMargin;
@@ -24,7 +24,7 @@ namespace task2
             var next = root;
             for (int level = 0; next != null; level++)
             {
-                var item = new NodeInfo { Node = next, Text = next.Data.ToString(" 0 ") };
+                var item = new NodeInfo { Node = next, Text = next.Value.ToString(" 0 ") };
                 if (level < last.Count)
                 {
                     item.StartPos = last[level].EndPos + 1;
@@ -38,7 +38,7 @@ namespace task2
                 if (level > 0)
                 {
                     item.Parent = last[level - 1];
-                    if (next == item.Parent.Node.Left)
+                    if (next == item.Parent.Node.LeftChild)
                     {
                         item.Parent.Left = item;
                         item.EndPos = Math.Max(item.EndPos, item.Parent.StartPos);
@@ -49,7 +49,7 @@ namespace task2
                         item.StartPos = Math.Max(item.StartPos, item.Parent.EndPos);
                     }
                 }
-                next = next.Left ?? next.Right;
+                next = next.LeftChild ?? next.RightChild;
                 for (; next == null; item = item.Parent)
                 {
                     Print(item, rootTop + 2 * level);
@@ -57,7 +57,7 @@ namespace task2
                     if (item == item.Parent.Left)
                     {
                         item.Parent.StartPos = item.EndPos;
-                        next = item.Parent.Node.Right;
+                        next = item.Parent.Node.RightChild;
                     }
                     else
                     {
